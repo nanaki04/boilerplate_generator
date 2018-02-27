@@ -4,11 +4,9 @@ defmodule BoilerplateGenerator.InterfaceMethod do
   @type state :: BoilerplateGenerator.state
   @type method :: Method.method
 
-  @template File.read! Application.get_env(:boilerplate_generator, :interface_method_template, "templates/interface_method.tmpl")
-
   @spec generate(state, method) :: String.t
   def generate(state, method) do
-    BoilerplateGenerator.find_template(state, :interface_method_template, @template)
+    state.interface_method_template
     |> String.replace(~r/<\{description\}>/, Method.description method)
     |> String.replace(~r/<\{type\}>/, Method.type method)
     |> String.replace(~r/<\{name\}>/, Method.name method)

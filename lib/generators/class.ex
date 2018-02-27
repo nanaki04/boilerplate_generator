@@ -10,11 +10,9 @@ defmodule BoilerplateGenerator.Class do
   @type ok :: BoilerplateGenerator.Exporter.ok
   @type error :: BoilerplateGenerator.Exporter.error
 
-  @template File.read! Application.get_env(:boilerplate_generator, :class_template, "templates/class.tmpl")
-
   @spec generate(state, namespace, class) :: ok | error
   def generate(state, namespace, class) do
-    BoilerplateGenerator.find_template(state, :class_template, @template)
+    state.class_template
     |> String.replace(~r/<\{namespace\}>/, Namespace.name namespace)
     |> String.replace(~r/<\{name\}>/, Class.name class)
     |> String.replace(~r/<\{description\}>/, Class.description class)

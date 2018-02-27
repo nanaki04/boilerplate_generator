@@ -4,11 +4,9 @@ defmodule BoilerplateGenerator.ClassMethod do
   @type state :: BoilerplateGenerator.state
   @type method :: Method.method
 
-  @template File.read! Application.get_env(:boilerplate_generator, :method_template, "templates/method.tmpl")
-
   @spec generate(state, method) :: String.t
   def generate(state, method) do
-    BoilerplateGenerator.find_template(state, :class_method_template, @template)
+    state.method_template
     |> String.replace(~r/<\{description\}>/, Method.description method)
     |> String.replace(~r/<\{accessibility\}>/, Method.accessibility method)
     |> String.replace(~r/<\{type\}>/, Method.type method)

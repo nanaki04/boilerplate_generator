@@ -20,18 +20,6 @@ use Mix.Config
 #
 #     config :logger, level: :info
 #
-
-config :boilerplate_generator,
-  class_template: "templates/class.tmpl",
-  enum_template: "templates/enum.tmpl",
-  enum_property_template: "templates/enum_property.tmpl",
-  interface: "templates/interface.tmpl",
-  interface_method: "templates/interface_method.tmpl",
-  interface_property: "templates/interface_property.tmpl",
-  method: "templates/method.tmpl",
-  public_property: "templates/public_property.tmpl",
-  private_property: "templates/private_property.tmpl"
-
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
 # by uncommenting the line below and defining dev.exs, test.exs and such.

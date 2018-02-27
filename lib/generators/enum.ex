@@ -10,11 +10,9 @@ defmodule BoilerplateGenerator.Enum do
   @type ok :: BoilerplateGenerator.Exporter.ok
   @type error :: BoilerplateGenerator.Exporter.error
 
-  @template File.read! Application.get_env(:boilerplate_generator, :enum_template, "templates/enum.tmpl")
-
   @spec generate(state, namespace, enum) :: ok | error
   def generate(state, namespace, enum) do
-    BoilerplateGenerator.find_template(state, :enum_template, @template)
+    state.enum_template
     |> String.replace(~r/<\{namespace\}>/, Namespace.name namespace)
     |> String.replace(~r/<\{name\}>/, Class.name enum)
     |> String.replace(~r/<\{description\}>/, Class.description enum)

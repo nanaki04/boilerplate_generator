@@ -11,11 +11,9 @@ defmodule BoilerplateGenerator.Interface do
   @type ok :: BoilerplateGenerator.Exporter.ok
   @type error :: BoilerplateGenerator.Exporter.error
 
-  @template File.read! Application.get_env(:boilerplate_generator, :interface_template, "templates/interface.tmpl")
-
   @spec generate(state, namespace, interface) :: ok | error
   def generate(state, namespace, interface) do
-    BoilerplateGenerator.find_template(state, :interface_template, @template)
+    state.interface_template
     |> String.replace(~r/<\{namespace\}>/, Namespace.name namespace)
     |> String.replace(~r/<\{name\}>/, Class.name interface)
     |> String.replace(~r/<\{description\}>/, Class.description interface)

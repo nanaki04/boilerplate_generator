@@ -8,9 +8,9 @@ defmodule BoilerplateGenerator do
     class_template: String.t,
     interface_template: String.t,
     enum_template: String.t,
-    class_public_property_template: String.t,
-    class_private_property_template: String.t,
-    class_method_template: String.t,
+    public_property_template: String.t,
+    private_property_template: String.t,
+    method_template: String.t,
     interface_property_template: String.t,
     interface_method_template: String.t,
     enum_property_template: String.t,
@@ -20,13 +20,23 @@ defmodule BoilerplateGenerator do
     | {:class_template, String.t}
     | {:interface_template, String.t}
     | {:enum_template, String.t}
-    | {:class_public_property_template, String.t}
-    | {:class_private_property_template, String.t}
-    | {:class_method_template, String.t}
+    | {:public_property_template, String.t}
+    | {:private_property_template, String.t}
+    | {:method_template, String.t}
     | {:interface_property_template, String.t}
     | {:interface_method_template, String.t}
     | {:enum_property_template, String.t}
   @type options :: [option]
+
+  @class_template File.read! "templates/class.tmpl"
+  @enum_template File.read! "templates/enum.tmpl"
+  @enum_property_template File.read! "templates/enum_property.tmpl"
+  @interface_template File.read! "templates/interface.tmpl"
+  @interface_method_template File.read! "templates/interface_method.tmpl"
+  @interface_property_template File.read! "templates/interface_property.tmpl"
+  @method_template File.read! "templates/method.tmpl"
+  @public_property_template File.read! "templates/public_property.tmpl"
+  @private_property_template File.read! "templates/private_property.tmpl"
 
   defstruct code_parser_state: %CodeParserState{},
     root_dir: "",
@@ -34,9 +44,9 @@ defmodule BoilerplateGenerator do
     class_template: "",
     interface_template: "",
     enum_template: "",
-    class_public_property_template: "",
-    class_private_property_template: "",
-    class_method_template: "",
+    public_property_template: "",
+    private_property_template: "",
+    method_template: "",
     interface_property_template: "",
     interface_method_template: "",
     enum_property_template: ""
@@ -49,9 +59,17 @@ defmodule BoilerplateGenerator do
   end
 
   @spec parse_options(state, options) :: state
-  defp parse_options(state, _opts) do
-    # TODO
+  defp parse_options(state, options) do
     state
+    |> Map.put(:class_template, Keyword.get(options, :class_template, @class_template))
+    |> Map.put(:enum_template, Keyword.get(options, :enum_template, @enum_template))
+    |> Map.put(:enum_property_template, Keyword.get(options, :enum_property_template, @enum_property_template))
+    |> Map.put(:interface_template, Keyword.get(options, :interface_template, @interface_template))
+    |> Map.put(:interface_method_template, Keyword.get(options, :interface_method_template, @interface_method_template))
+    |> Map.put(:interface_property_template, Keyword.get(options, :interface_property_template, @interface_property_template))
+    |> Map.put(:method_template, Keyword.get(options, :method_template, @method_template))
+    |> Map.put(:public_property_template, Keyword.get(options, :public_property_template, @public_property_template))
+    |> Map.put(:private_property_template, Keyword.get(options, :private_property_template, @private_property_template))
   end
 
   @spec find_template(state, atom, String.t) :: String.t
