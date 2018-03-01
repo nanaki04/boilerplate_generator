@@ -23,12 +23,23 @@ defmodule BoilerplateGenerator.Interface do
     |> String.replace(~r/<\{methods\}>/, Enum.reduce(Class.methods(interface), "", fn
       method, acc -> acc <> MethodGenerator.generate(state, method)
     end))
+    |> (&export state, namespace, interface, &1).()
+  end
+
+  @spec export(state, namespace, interface, String.t) :: String.t | ok | error
+  defp export(%{single_file: true}, _, _, content) do
+    content
+  end
+
+  defp export(state, namespace, interface, content) do
+    content
     |> BoilerplateGenerator.Exporter.export(namespace
       |> Namespace.name
       |> String.split(".")
       |> (&[state.root_dir | &1]).()
-      |> (&(&1 ++ [Class.name(interface) <> ".cs"])).()
+      |> (&(&1 ++ [Class.name(interface) <> state.extension])).()
       |> Path.join
     )
   end
+
 end

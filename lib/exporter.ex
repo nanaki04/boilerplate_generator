@@ -7,9 +7,16 @@ defmodule BoilerplateGenerator.Exporter do
 
   @spec export(file, path) :: ok | error
   def export(file, path) do
+    path = case String.match?(path, ~r/(?<=^)\/[\w.]+(?=$)/) do
+      true -> String.slice path, 1..String.length(path)
+      _ -> path
+    end
     path
     |> String.replace(~r/[\w\.]+(?=$)/, "")
-    |> File.mkdir_p
+    |> case() do
+      "" -> :ok
+      dir -> File.mkdir_p(dir)
+    end
     |> write_file(file, path)
   end
 

@@ -19,11 +19,21 @@ defmodule BoilerplateGenerator.Enum do
     |> String.replace(~r/<\{properties\}>/, Enum.reduce(Class.properties(enum), "", fn
       property, acc -> acc <> PropertyGenerator.generate(state, property)
     end))
+    |> (&export state, namespace, enum, &1).()
+  end
+
+  @spec export(state, namespace, enum, String.t) :: String.t | ok | error
+  defp export(%{single_file: true}, _, _, content) do
+    content
+  end
+
+  defp export(state, namespace, enum, content) do
+    content
     |> BoilerplateGenerator.Exporter.export(namespace
       |> Namespace.name
       |> String.split(".")
       |> (&[state.root_dir | &1]).()
-      |> (&(&1 ++ [Class.name(enum) <> ".cs"])).()
+      |> (&(&1 ++ [Class.name(enum) <> state.extension])).()
       |> Path.join
     )
   end

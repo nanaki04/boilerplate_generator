@@ -2,6 +2,7 @@ defmodule BoilerplateGenerator do
 
   @type code_parser_state :: CodeParserState.state
   @type state :: %BoilerplateGenerator{
+    extension: String.t,
     code_parser_state: code_parser_state,
     root_dir: String.t,
     force_overwrite: boolean,
@@ -14,8 +15,11 @@ defmodule BoilerplateGenerator do
     interface_property_template: String.t,
     interface_method_template: String.t,
     enum_property_template: String.t,
+    single_file: boolean,
+    result: String.t
   }
   @type option :: {:root, String.t}
+    | {:extension, String.t}
     | {:force_overwrite, boolean}
     | {:class_template, String.t}
     | {:interface_template, String.t}
@@ -26,6 +30,7 @@ defmodule BoilerplateGenerator do
     | {:interface_property_template, String.t}
     | {:interface_method_template, String.t}
     | {:enum_property_template, String.t}
+    | {:single_file, boolean}
   @type options :: [option]
 
   @class_template File.read! "templates/class.tmpl"
@@ -39,6 +44,7 @@ defmodule BoilerplateGenerator do
   @private_property_template File.read! "templates/private_property.tmpl"
 
   defstruct code_parser_state: %CodeParserState{},
+    extension: ".gen",
     root_dir: "",
     force_overwrite: false,
     class_template: "",
@@ -49,7 +55,9 @@ defmodule BoilerplateGenerator do
     method_template: "",
     interface_property_template: "",
     interface_method_template: "",
-    enum_property_template: ""
+    enum_property_template: "",
+    single_file: false,
+    result: ""
 
   @spec generate(code_parser_state, options) :: :ok
   def generate(code_parser_state, opts \\ []) do
@@ -61,6 +69,7 @@ defmodule BoilerplateGenerator do
   @spec parse_options(state, options) :: state
   defp parse_options(state, options) do
     state
+    |> Map.put(:extension, Keyword.get(options, :extension, ".gen"))
     |> Map.put(:class_template, Keyword.get(options, :class_template, @class_template))
     |> Map.put(:enum_template, Keyword.get(options, :enum_template, @enum_template))
     |> Map.put(:enum_property_template, Keyword.get(options, :enum_property_template, @enum_property_template))
@@ -70,6 +79,7 @@ defmodule BoilerplateGenerator do
     |> Map.put(:method_template, Keyword.get(options, :method_template, @method_template))
     |> Map.put(:public_property_template, Keyword.get(options, :public_property_template, @public_property_template))
     |> Map.put(:private_property_template, Keyword.get(options, :private_property_template, @private_property_template))
+    |> Map.put(:single_file, Keyword.get(options, :single_file, false))
   end
 
   @spec find_template(state, atom, String.t) :: String.t

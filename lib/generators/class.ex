@@ -22,11 +22,21 @@ defmodule BoilerplateGenerator.Class do
     |> String.replace(~r/<\{methods\}>/, Enum.reduce(Class.methods(class), "", fn
       method, acc -> acc <> MethodGenerator.generate(state, method)
     end))
+    |> (&export state, namespace, class, &1).()
+  end
+
+  @spec export(state, namespace, class, String.t) :: String.t | ok | error
+  defp export(%{single_file: true}, _, _, content) do
+    content
+  end
+
+  defp export(state, namespace, class, content) do
+    content
     |> BoilerplateGenerator.Exporter.export(namespace
       |> Namespace.name
       |> String.split(".")
       |> (&[state.root_dir | &1]).()
-      |> (&(&1 ++ [Class.name(class) <> ".cs"])).()
+      |> (&(&1 ++ [Class.name(class) <> state.extension])).()
       |> Path.join
     )
   end
