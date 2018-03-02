@@ -7,6 +7,7 @@ defmodule BoilerplateGenerator.InterfaceMethod do
   @spec generate(state, method) :: String.t
   def generate(state, method) do
     state.interface_method_template
+    |> String.replace(~r/<\{accessibility\}>/, Method.accessibility method)
     |> String.replace(~r/<\{description\}>/, Method.description method)
     |> String.replace(~r/<\{type\}>/, Method.type method)
     |> String.replace(~r/<\{name\}>/, Method.name method)

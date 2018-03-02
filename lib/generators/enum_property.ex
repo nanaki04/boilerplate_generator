@@ -8,5 +8,6 @@ defmodule BoilerplateGenerator.EnumProperty do
   def generate(state, property) do
     state.enum_property_template
     |> String.replace(~r/<\{name\}>/, Property.name property)
+    |> String.replace(~r/<\{description\}>/, Property.description property)
   end
 end
