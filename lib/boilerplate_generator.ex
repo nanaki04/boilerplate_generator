@@ -15,6 +15,7 @@ defmodule BoilerplateGenerator do
     interface_property_template: String.t,
     interface_method_template: String.t,
     enum_property_template: String.t,
+    file_template: String.t,
     single_file: boolean,
     result: String.t
   }
@@ -30,6 +31,7 @@ defmodule BoilerplateGenerator do
     | {:interface_property_template, String.t}
     | {:interface_method_template, String.t}
     | {:enum_property_template, String.t}
+    | {:file_template, String.t}
     | {:single_file, boolean}
   @type options :: [option]
 
@@ -42,6 +44,7 @@ defmodule BoilerplateGenerator do
   @method_template File.read! "templates/method.tmpl"
   @public_property_template File.read! "templates/public_property.tmpl"
   @private_property_template File.read! "templates/private_property.tmpl"
+  @file_template ""
 
   defstruct code_parser_state: %CodeParserState{},
     extension: ".gen",
@@ -56,6 +59,7 @@ defmodule BoilerplateGenerator do
     interface_property_template: "",
     interface_method_template: "",
     enum_property_template: "",
+    file_template: "",
     single_file: false,
     result: ""
 
@@ -79,6 +83,7 @@ defmodule BoilerplateGenerator do
     |> Map.put(:method_template, Keyword.get(options, :method_template, @method_template))
     |> Map.put(:public_property_template, Keyword.get(options, :public_property_template, @public_property_template))
     |> Map.put(:private_property_template, Keyword.get(options, :private_property_template, @private_property_template))
+    |> Map.put(:file_template, Keyword.get(options, :file_template, @file_template))
     |> Map.put(:single_file, Keyword.get(options, :single_file, false))
   end
 

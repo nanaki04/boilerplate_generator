@@ -8,6 +8,7 @@ defmodule BoilerplateGenerator.File do
   def generate_from_files(%{single_file: true} = state) do
     state.code_parser_state.files
     |> Enum.reduce(state, fn file, state -> generate_from_file(state, file) end)
+    |> wrap_file_template
     |> Map.fetch!(:result)
     |> String.replace(~r/(?<=^)\n/, "")
     |> BoilerplateGenerator.Exporter.export(state.root_dir <> "/export" <> state.extension)
@@ -32,5 +33,12 @@ defmodule BoilerplateGenerator.File do
     end)
     |> Enum.map(&Task.await/1)
     |> (fn _ -> :ok end).()
+  end
+
+  @spec wrap_file_template(state) :: state
+  defp wrap_file_template(%{file_template: ""} = state), do: state
+
+  defp wrap_file_template(%{file_template: file_template} = state) do
+    Map.update! state, :result, &String.replace(file_template, ~r/<\{file\}>/, &1)
   end
 end
