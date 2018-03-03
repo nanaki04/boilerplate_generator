@@ -34,7 +34,8 @@ defmodule BoilerplateGenerator.Class do
     content
     |> BoilerplateGenerator.Exporter.export(namespace
       |> Namespace.name
-      |> String.split(".")
+      |> String.replace(~r/(?<=\s)App(?=\\)/, "app")
+      |> String.split(~r/[\\.]/)
       |> (&[state.root_dir | &1]).()
       |> (&(&1 ++ [Class.name(class) <> state.extension])).()
       |> Path.join

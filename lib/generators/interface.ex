@@ -35,7 +35,8 @@ defmodule BoilerplateGenerator.Interface do
     content
     |> BoilerplateGenerator.Exporter.export(namespace
       |> Namespace.name
-      |> String.split(".")
+      |> String.replace(~r/(?<=\s)App(?=\\)/, "app")
+      |> String.split(~r/[\\.]/)
       |> (&[state.root_dir | &1]).()
       |> (&(&1 ++ [Class.name(interface) <> state.extension])).()
       |> Path.join
