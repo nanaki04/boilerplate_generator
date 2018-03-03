@@ -38,6 +38,7 @@ defmodule BoilerplateGenerator do
     | {:namespace_template, String.t}
     | {:method_parameter_doc_template, String.t}
     | {:single_file, boolean}
+    | {:decorators, [BoilerplateGenerator.Decorator.t]}
   @type options :: [option]
 
   @class_template File.read! "templates/class.tmpl"
@@ -100,7 +101,7 @@ defmodule BoilerplateGenerator do
     |> Map.put(:namespace_template, Keyword.get(options, :namespace_template, @namespace_template))
     |> Map.put(:method_parameter_doc_template, Keyword.get(options, :method_parameter_doc_template, @method_parameter_doc_template))
     |> Map.put(:single_file, Keyword.get(options, :single_file, false))
-    |> Map.put(:decorators, Keyword.get(options, :decorators, false))
+    |> Map.put(:decorators, Keyword.get(options, :decorators, []))
   end
 
   @spec find_template(state, atom, String.t) :: String.t
