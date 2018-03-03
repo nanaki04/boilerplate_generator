@@ -33,6 +33,7 @@ defmodule BoilerplateGenerator.Interface do
 
   defp export(state, namespace, interface, content) do
     content
+    |> BoilerplateGenerator.Exporter.decorate(state.decorators)
     |> BoilerplateGenerator.Exporter.export(namespace
       |> Namespace.name
       |> String.replace(~r/(?<=\s)App(?=\\)/, "app")

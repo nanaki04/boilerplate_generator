@@ -1,4 +1,5 @@
 defmodule BoilerplateGenerator.Exporter do
+  alias BoilerplateGenerator.Decorator, as: Decorator
 
   @type file :: String.t
   @type path :: String.t
@@ -18,6 +19,13 @@ defmodule BoilerplateGenerator.Exporter do
       dir -> File.mkdir_p(dir)
     end
     |> write_file(file, path)
+  end
+
+  @spec decorate(Decorator.contents, [Decorator.t]) :: Decorator.contents
+  def decorate(file, decorators) do
+    Enum.reduce(decorators, file, fn decorator, file ->
+      decorator.transform_output(file)
+    end)
   end
 
   @spec write_file(ok | error, file, path) :: ok | error

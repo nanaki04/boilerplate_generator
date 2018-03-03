@@ -11,6 +11,7 @@ defmodule BoilerplateGenerator.File do
     |> wrap_file_template
     |> Map.fetch!(:result)
     |> String.replace(~r/(?<=^)\n/, "")
+    |> BoilerplateGenerator.Exporter.decorate(state.decorators)
     |> BoilerplateGenerator.Exporter.export(state.root_dir <> "/export" <> state.extension)
   end
 

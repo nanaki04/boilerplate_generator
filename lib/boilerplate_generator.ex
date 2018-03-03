@@ -19,6 +19,7 @@ defmodule BoilerplateGenerator do
     namespace_template: String.t,
     method_parameter_doc_template: String.t,
     single_file: boolean,
+    decorators: [BoilerplateGenerator.Decorator.t],
     result: String.t
   }
   @type option :: {:root, String.t}
@@ -69,12 +70,16 @@ defmodule BoilerplateGenerator do
     namespace_template: "",
     method_parameter_doc_template: "",
     single_file: false,
+    decorators: [],
     result: ""
 
   @spec generate(code_parser_state, options) :: :ok
   def generate(code_parser_state, opts \\ []) do
     %BoilerplateGenerator{code_parser_state: code_parser_state}
     |> parse_options(opts)
+    |> (fn state -> Enum.reduce(state.decorators, state, fn decorator, state ->
+      Map.update!(state, :code_parser_state, &decorator.transform_input/1)
+    end) end).()
     |> BoilerplateGenerator.File.generate_from_files
   end
 
@@ -95,6 +100,7 @@ defmodule BoilerplateGenerator do
     |> Map.put(:namespace_template, Keyword.get(options, :namespace_template, @namespace_template))
     |> Map.put(:method_parameter_doc_template, Keyword.get(options, :method_parameter_doc_template, @method_parameter_doc_template))
     |> Map.put(:single_file, Keyword.get(options, :single_file, false))
+    |> Map.put(:decorators, Keyword.get(options, :decorators, false))
   end
 
   @spec find_template(state, atom, String.t) :: String.t
