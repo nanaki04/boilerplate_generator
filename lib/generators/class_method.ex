@@ -15,7 +15,7 @@ defmodule BoilerplateGenerator.ClassMethod do
       parameter -> parameter.type <> " " <> parameter.name
     end) |> Enum.join(", "))
     |> String.replace(~r/<\{property docs\}>/, Enum.reduce(Method.parameters(method), "", fn
-      parameter, acc -> acc <> "\n        /// <param name=\"" <> parameter.name <> "\"></param>"
+      parameter, acc -> acc <> String.replace(state.method_parameter_doc_template, ~r/<\{name\}>/, parameter.name)
     end))
   end
 end
